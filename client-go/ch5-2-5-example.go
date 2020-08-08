@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/discovery/cached/disk"
+
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -21,7 +22,13 @@ func main() {
 	}
 
 	// 根据指定的 config 创建一个新的 dynamicClient
-	discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
+	//discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
+
+	discoveryClient, err := disk.NewCachedDiscoveryClientForConfig(config,
+		"~/.kube/cache/discovery/",
+		"~/.kube/http-cache",
+		600)
+
 	if err != nil {
 		panic(err.Error())
 	}
